@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkEasy — Smart Parking</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* NAVBAR */
+        nav {
+            height: 64px;
+            background: #10182f;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            background: #2875f0;
+            padding: 5px 8px;
+            border-radius: 6px;
+            margin-right: 7px;
+        }
+
+        nav a {
+            color: #e8ecf5;
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #4d8dff;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 410px;
+            background: linear-gradient(135deg, #10182f, #1c3d72);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 55px 8%;
+            gap: 50px;
+        }
+
+        .hero-content {
+            max-width: 620px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            line-height: 1.1;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 span {
+            color: #5b9cff;
+        }
+
+        .hero p {
+            color: #cbd7ea;
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 13px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .primary {
+            background: #2875f0;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #1c61d2;
+        }
+
+        .secondary {
+            border: 1px solid #7185a8;
+            color: white;
+        }
+
+        /* PARKING VISUAL */
+        .parking-visual {
+            width: 370px;
+            min-width: 320px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 18px;
+            padding: 24px;
+        }
+
+        .parking-title {
+            text-align: center;
+            margin-bottom: 18px;
+            font-size: 16px;
+        }
+
+        .slots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .slot {
+            height: 65px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .available {
+            background: #1f9d68;
+        }
+
+        .occupied {
+            background: #d94c4c;
+        }
+
+        /* STATS */
+        .stats {
+            width: 86%;
+            margin: -35px auto 45px;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .stat {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(20,40,80,0.08);
+        }
+
+        .stat h2 {
+            font-size: 30px;
+            color: #2875f0;
+            margin-bottom: 6px;
+        }
+
+        .stat p {
+            color: #69758a;
+            font-size: 14px;
+        }
+
+        /* SECTIONS */
+        .section {
+            width: 86%;
+            margin: 0 auto 55px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .section-title p {
+            color: #6b7688;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature {
+            background: white;
+            border: 1px solid #e1e6ef;
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #68758a;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        /* HOW IT WORKS */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .step {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e1e6ef;
+            text-align: center;
+        }
+
+        .number {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 15px;
+            background: #2875f0;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #10182f;
+            color: #aeb9cc;
+            text-align: center;
+            padding: 25px;
+            font-size: 13px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 850px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .buttons {
+                justify-content: center;
+            }
+
+            .parking-visual {
+                width: 100%;
+            }
+
+            .stats,
+            .features,
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 0 20px;
+            }
+
+            nav a {
+                margin-left: 10px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">
+        <span>🅿</span> ParkEasy
+    </div>
+
+    <div>
+        <a href="index.html">Home</a>
+        <a href="booking.html">Book a Slot</a>
+        <a href="mybookings.html">My Bookings</a>
+        <a href="admin.html">Admin</a>
+    </div>
+</nav>
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="tag">🚗 Smart Parking Management</div>
+
+        <h1>
+            Parking made<br>
+            <span>simple & smarter.</span>
+        </h1>
+
+        <p>
+            Find available parking slots, reserve your spot,
+            and complete your payment — all from one place.
+        </p>
+
+        <div class="buttons">
+            <a href="booking.html" class="btn primary">Book a Slot →</a>
+            <a href="mybookings.html" class="btn secondary">My Bookings</a>
+        </div>
+
+    </div>
+
+    <div class="parking-visual">
+
+        <div class="parking-title">
+            🅿️ Live Parking Status
+        </div>
+
+        <div class="slots">
+            <div class="slot available">P1</div>
+            <div class="slot available">P2</div>
+            <div class="slot occupied">P3</div>
+            <div class="slot available">P4</div>
+
+            <div class="slot occupied">P5</div>
+            <div class="slot available">P6</div>
+            <div class="slot available">P7</div>
+            <div class="slot occupied">P8</div>
+
+            <div class="slot available">P9</div>
+            <div class="slot available">P10</div>
+            <div class="slot occupied">P11</div>
+            <div class="slot available">P12</div>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="stats">
+
+    <div class="stat">
+        <h2>20</h2>
+        <p>Total Parking Slots</p>
+    </div>
+
+    <div class="stat">
+        <h2>14</h2>
+        <p>Available Right Now</p>
+    </div>
+
+    <div class="stat">
+        <h2>24/7</h2>
+        <p>Parking Management</p>
+    </div>
+
+</section>
+
+<section class="section">
+
+    <div class="section-title">
+        <h2>Everything you need</h2>
+        <p>A simple parking experience from start to finish.</p>
+    </div>
+
+    <div class="features">
+
+        <div class="feature">
+            <div class="feature-icon">🅿️</div>
+            <h3>Live Availability</h3>
+            <p>
+                Check available parking slots before making
+                your reservation.
+            </p>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <h3>Quick Booking</h3>
+            <p>
+                Reserve your preferred parking slot in just
+                a few clicks.
+            </p>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon">🔒</div>
+            <h3>Secure Payments</h3>
+            <p>
+                Complete your parking payment through a
+                simple and secure flow.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="section">
+
+    <div class="section-title">
+        <h2>How ParkEasy works</h2>
+        <p>Three simple steps to park smarter.</p>
+    </div>
+
+    <div class="steps">
+
+        <div class="step">
+            <div class="number">1</div>
+            <h3>Find</h3>
+            <p>Check which parking slots are available.</p>
+        </div>
+
+        <div class="step">
+            <div class="number">2</div>
+            <h3>Book</h3>
+            <p>Select a slot and create your reservation.</p>
+        </div>
+
+        <div class="step">
+            <div class="number">3</div>
+            <h3>Pay</h3>
+            <p>Complete payment and confirm your booking.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    © 2026 ParkEasy · Smart Parking Management System
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — ParkEasy</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+    body {
+        background: #f4f7fb;
+    }
+
+    .login-wrapper {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .login-box {
+        width: 100%;
+        max-width: 430px;
+        background: white;
+        padding: 38px;
+        border-radius: 18px;
+        box-shadow: 0 15px 45px rgba(20, 40, 80, 0.10);
+        border: 1px solid #e5eaf2;
+    }
+
+    .login-icon {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 18px;
+        background: #2875f0;
+        color: white;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    .login-box h2 {
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 8px;
+        color: #172033;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #718096;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+
+    .field {
+        margin-bottom: 18px;
+    }
+
+    .field label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #303b50;
+    }
+
+    .input-wrap {
+        position: relative;
+    }
+
+    .input-wrap input {
+        width: 100%;
+        padding: 13px 45px 13px 14px;
+        border: 1px solid #d8deea;
+        border-radius: 9px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .input-wrap input:focus {
+        border-color: #2875f0;
+        box-shadow: 0 0 0 3px rgba(40,117,240,0.10);
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #68758a;
+        padding: 0;
+    }
+
+    .login-btn {
+        width: 100%;
+        border: none;
+        padding: 14px;
+        border-radius: 9px;
+        background: #2875f0;
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 5px;
+        transition: 0.2s;
+    }
+
+    .login-btn:hover {
+        background: #1d61d0;
+    }
+
+    .msg {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 14px;
+    }
+
+    .msg.error {
+        color: #d43f3f;
+    }
+
+    .register-text {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 14px;
+        color: #718096;
+    }
+
+    .register-text a {
+        color: #2875f0;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .register-text a:hover {
+        text-decoration: underline;
+    }
+
+    .security-note {
+        text-align: center;
+        margin-top: 22px;
+        font-size: 12px;
+        color: #9aa4b4;
+    }
+
+    @media (max-width: 600px) {
+        .login-box {
+            padding: 28px 22px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+    <a class="brand" href="index.html">🅿️ ParkEasy</a>
+
+    <nav>
+        <a href="index.html" data-page="home">Home</a>
+        <a href="booking.html" data-page="booking">Book a Slot</a>
+        <a href="mybookings.html" data-page="mybookings">My Bookings</a>
+        <a href="admin.html" data-page="admin">Admin</a>
+        <span id="authArea"></span>
+    </nav>
+</header>
+
+<div class="login-wrapper">
+
+    <div class="login-box">
+
+        <div class="login-icon">🔐</div>
+
+        <h2>Welcome Back</h2>
+
+        <p class="subtitle">
+            Login to continue to your ParkEasy account
+        </p>
+
+        <form id="loginForm">
+
+            <div class="field">
+                <label for="u">Username</label>
+
+                <div class="input-wrap">
+                    <input
+                        type="text"
+                        id="u"
+                        placeholder="Enter your username"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="p">Password</label>
+
+                <div class="input-wrap">
+                    <input
+                        type="password"
+                        id="p"
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword()"
+                    >👁️</button>
+                </div>
+            </div>
+
+            <button type="submit" class="login-btn">
+                Login →
+            </button>
+
+        </form>
+
+        <p id="m" class="msg"></p>
+
+        <p class="register-text">
+            New to ParkEasy?
+            <a href="register.html">Create an account</a>
+        </p>
+
+        <div class="security-note">
+            🔒 Your account information is securely handled.
+        </div>
+
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+renderNav("");
+
+function togglePassword() {
+    const password = document.getElementById("p");
+
+    password.type =
+        password.type === "password"
+            ? "text"
+            : "password";
+}
+
+document.getElementById("loginForm").addEventListener("submit", async (ev) => {
+
+    ev.preventDefault();
+
+    const m = document.getElementById("m");
+
+    m.textContent = "";
+    m.className = "msg";
+
+    const { ok, data } = await apiPost("/api/login", {
+        username: document.getElementById("u").value.trim(),
+        password: document.getElementById("p").value
+    });
+
+    if (ok && data.token) {
+
+        saveSession(data.token, data.username);
+
+        location.href = "booking.html";
+
+    } else {
+
+        m.textContent = data.error || "Login failed";
+        m.className = "msg error";
+
+    }
+});
+</script>
+
+</body>
+</html>

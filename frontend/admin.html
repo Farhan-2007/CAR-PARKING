@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — ParkEasy</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+body {
+  background: #f5f7fb;
+}
+
+.admin-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #172033;
+  font-size: 30px;
+}
+
+.admin-header p {
+  margin: 7px 0 0;
+  color: #6b7280;
+}
+
+.refresh-btn {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 11px 18px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.refresh-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Statistics */
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.dashboard-stat {
+  background: white;
+  border-radius: 15px;
+  padding: 22px;
+  box-shadow: 0 7px 25px rgba(0,0,0,0.06);
+  border-left: 4px solid #2563eb;
+}
+
+.dashboard-stat.available {
+  border-left-color: #16a34a;
+}
+
+.dashboard-stat.booked {
+  border-left-color: #dc2626;
+}
+
+.stat-icon {
+  font-size: 25px;
+  margin-bottom: 12px;
+}
+
+.stat-number {
+  font-size: 30px;
+  font-weight: 800;
+  color: #172033;
+}
+
+.stat-label {
+  color: #6b7280;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+/* Table */
+
+.dashboard-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 7px 30px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.card-heading {
+  padding: 20px 25px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.card-heading h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 19px;
+}
+
+.card-heading p {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #f8fafc;
+  color: #64748b;
+  text-align: left;
+  padding: 15px 22px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+
+td {
+  padding: 16px 22px;
+  border-top: 1px solid #eef0f4;
+  color: #334155;
+}
+
+.slot-id {
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge.AVAILABLE {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge.BOOKED {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.error {
+  text-align: center;
+  padding: 25px;
+  color: #dc2626;
+}
+
+@media (max-width: 700px) {
+  .admin-page {
+    margin: 25px auto;
+  }
+
+  .admin-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .admin-header h1 {
+    font-size: 25px;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  th,
+  td {
+    padding: 13px 15px;
+    white-space: nowrap;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <a class="brand" href="index.html">🅿️ ParkEasy</a>
+
+  <nav>
+    <a href="index.html" data-page="home">Home</a>
+    <a href="booking.html" data-page="booking">Book a Slot</a>
+    <a href="mybookings.html" data-page="mybookings">My Bookings</a>
+    <a href="admin.html" data-page="admin">Admin</a>
+    <span id="authArea"></span>
+  </nav>
+</header>
+
+<div class="admin-page">
+
+  <div class="admin-header">
+    <div>
+      <h1>Admin Dashboard</h1>
+      <p>Monitor the current parking lot status.</p>
+    </div>
+
+    <button class="refresh-btn" id="refreshBtn">
+      ↻ Refresh
+    </button>
+  </div>
+
+  <div id="stats" class="dashboard-stats"></div>
+
+  <div class="dashboard-card">
+
+    <div class="card-heading">
+      <h2>Parking Slots</h2>
+      <p>Live status of every parking slot</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Slot</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+renderNav("admin");
+
+async function load() {
+
+  document.getElementById("rows").innerHTML = `
+    <tr>
+      <td colspan="2">Loading parking slots...</td>
+    </tr>
+  `;
+
+  const { ok, data } = await apiGet("/api/slots");
+
+  if (!ok) {
+    document.getElementById("rows").innerHTML = `
+      <tr>
+        <td colspan="2" class="error">
+          Could not load parking slots.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  const total = data.length;
+  const available = data.filter(
+    s => s.status === "AVAILABLE"
+  ).length;
+
+  const booked = total - available;
+
+  document.getElementById("stats").innerHTML = `
+
+    <div class="dashboard-stat">
+      <div class="stat-icon">🅿️</div>
+      <div class="stat-number">${total}</div>
+      <div class="stat-label">Total Slots</div>
+    </div>
+
+    <div class="dashboard-stat available">
+      <div class="stat-icon">✅</div>
+      <div class="stat-number">${available}</div>
+      <div class="stat-label">Available Slots</div>
+    </div>
+
+    <div class="dashboard-stat booked">
+      <div class="stat-icon">🚗</div>
+      <div class="stat-number">${booked}</div>
+      <div class="stat-label">Occupied Slots</div>
+    </div>
+
+  `;
+
+  document.getElementById("rows").innerHTML = data.map(s => `
+
+    <tr>
+      <td>
+        <span class="slot-id">
+          P${String(s.id).padStart(2, "0")}
+        </span>
+      </td>
+
+      <td>
+        <span class="badge ${s.status}">
+          ${s.status}
+        </span>
+      </td>
+    </tr>
+
+  `).join("");
+}
+
+document
+  .getElementById("refreshBtn")
+  .addEventListener("click", load);
+
+load();
+</script>
+
+</body>
+</html>
