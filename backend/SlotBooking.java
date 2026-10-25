@@ -61,7 +61,7 @@ public class SlotBooking {
             double amount=50.0;
             try(PreparedStatement q=c.prepareStatement("UPDATE slots SET status='BOOKED' WHERE id=?")){q.setInt(1,slot);q.executeUpdate();}
             int id;
-            try(PreparedStatement q=c.prepareStatement("INSERT INTO bookings(username,slot_id,amount,status) VALUES(?,?,?,'PENDING')",Statement.RETURN_GENERATED_KEYS)){
+            try(PreparedStatement q=c.prepareStatement("INSERT INTO bookings(username,slot_id,amount,status) VALUES(?,?,?,'PENDING')",new String[]{"id"})){
                 q.setString(1,u);q.setInt(2,slot);q.setDouble(3,amount);q.executeUpdate();
                 try(ResultSet r=q.getGeneratedKeys()){r.next();id=r.getInt(1);}
             }

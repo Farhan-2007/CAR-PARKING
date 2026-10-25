@@ -14,12 +14,12 @@ public class Main {
 
     static final String DB_URL = System.getenv().getOrDefault(
             "DB_URL",
-            "jdbc:mysql://localhost:3306/carparking"
+            "jdbc:postgresql://localhost:5432/carparking"
     );
 
     static final String DB_USER = System.getenv().getOrDefault(
             "DB_USER",
-            "root"
+            "postgres"
     );
 
     static final String DB_PASSWORD = System.getenv().getOrDefault(
@@ -113,35 +113,35 @@ public class Main {
         ) {
 
             s.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS users(" +
-                    "id INT PRIMARY KEY AUTO_INCREMENT," +
-                    "username VARCHAR(50) UNIQUE NOT NULL," +
-                    "password_hash VARCHAR(64) NOT NULL)"
+                "CREATE TABLE IF NOT EXISTS users(" +
+                "id SERIAL PRIMARY KEY," +
+                "username VARCHAR(50) UNIQUE NOT NULL," +
+                "password_hash VARCHAR(64) NOT NULL)"
             );
 
             s.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS slots(" +
-                    "id INT PRIMARY KEY," +
+                    "id SERIAL PRIMARY KEY," +
                     "status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE')"
             );
 
             s.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS bookings(" +
-                    "id INT PRIMARY KEY AUTO_INCREMENT," +
-                    "username VARCHAR(50) NOT NULL," +
-                    "slot_id INT NOT NULL," +
-                    "amount DECIMAL(10,2) NOT NULL," +
-                    "status VARCHAR(20) NOT NULL," +
-                    "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
-            );
+                "CREATE TABLE IF NOT EXISTS bookings(" +
+                "id SERIAL PRIMARY KEY," +
+                "username VARCHAR(50) NOT NULL," +
+                "slot_id INT NOT NULL," +
+                "amount DECIMAL(10,2) NOT NULL," +
+                "status VARCHAR(20) NOT NULL," +
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
+             );
 
             s.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS payments(" +
-                    "id INT PRIMARY KEY AUTO_INCREMENT," +
-                    "booking_id INT NOT NULL," +
-                    "amount DECIMAL(10,2) NOT NULL," +
-                    "status VARCHAR(20) NOT NULL," +
-                    "paid_at TIMESTAMP NULL)"
+                "CREATE TABLE IF NOT EXISTS payments(" +
+                "id SERIAL PRIMARY KEY," +
+                "booking_id INT NOT NULL," +
+                "amount DECIMAL(10,2) NOT NULL," +
+                "status VARCHAR(20) NOT NULL," +
+                "paid_at TIMESTAMP)"
             );
 
             try (
