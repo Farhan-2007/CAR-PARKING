@@ -24,7 +24,7 @@ public class Main {
 
     static final String DB_PASSWORD = System.getenv().getOrDefault(
             "DB_PASSWORD",
-            "farhan@2710"
+            ""
     );
 
     static final int PORT = Integer.parseInt(
