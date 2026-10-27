@@ -10,6 +10,22 @@ import java.util.Map;
  * - GET  /api/mybookings  -> the caller's own booking history (requires login)
  */
 public class SlotBooking {
+
+    static final int PAY_SECONDS = 100;
+
+    static void expireStale() {
+        try (Connection c = Main.db(); Statement s = c.createStatement()) {
+            s.executeUpdate(
+                "WITH expired AS (" +
+                "UPDATE bookings SET status='CANCELLED' " +
+                "WHERE status='PENDING' AND created_at < NOW() - INTERVAL '" + PAY_SECONDS + " seconds' " +
+                "RETURNING slot_id) " +
+                "UPDATE slots SET status='AVAILABLE' WHERE id IN (SELECT slot_id FROM expired)");
+        } catch (SQLException ex) {
+            // ignore; the next request will retry
+        }
+    }
+    
     static void handle(HttpExchange e) throws IOException {
         if(e.getRequestMethod().equalsIgnoreCase("OPTIONS")){Main.cors(e);e.sendResponseHeaders(204,-1);return;}
         try {
@@ -66,7 +82,7 @@ public class SlotBooking {
                 try(ResultSet r=q.getGeneratedKeys()){r.next();id=r.getInt(1);}
             }
             c.commit();
-            Main.send(e,201,"{\"booking_id\":"+id+",\"slot_id\":"+slot+",\"amount\":"+amount+",\"status\":\"PENDING\"}");
+            Main.send(e,201,"{\"booking_id\":"+id+",\"slot_id\":"+slot+",\"amount\":"+amount+",\"status\":\"PENDING\",\"expires_in\":"+PAY_SECONDS+"}");
         }
     }
 

@@ -121,6 +121,8 @@ td {
   background: #e8f7ee;
   color: #15803d;
 }
+.badge.pending{background:#fef3c7;color:#b45309}
+.badge.cancelled{background:#fee2e2;color:#b91c1c}
 
 .empty-state {
   text-align: center;
@@ -280,7 +282,7 @@ async function load() {
               </td>
 
               <td>
-                <span class="badge">
+                <span class="badge ${b.status.toLowerCase()}">
                   ${b.status}
                 </span>
               </td>

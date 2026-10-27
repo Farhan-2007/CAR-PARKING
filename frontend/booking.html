@@ -259,6 +259,20 @@
             gap: 10px;
         }
     }
+
+    .pay-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);
+        align-items:center;justify-content:center;z-index:100}
+    .pay-overlay.show{display:flex}
+    .pay-box{background:#fff;border-radius:16px;padding:30px;width:360px;max-width:92%;
+        text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+    .pay-box h2{margin:0 0 8px;color:#172033}
+    .pay-amount{font-size:32px;font-weight:700;color:#172033;margin:10px 0}
+    .pay-timer{color:#b45309;font-weight:600;margin-bottom:20px}
+    .pay-actions{display:flex;gap:12px}
+    .pay-actions button{flex:1;padding:12px;border:none;border-radius:9px;
+        font-weight:700;font-size:15px;cursor:pointer;color:#fff}
+    .pay-yes{background:#16a34a}
+    .pay-no{background:#dc2626}
 </style>
 </head>
 
@@ -351,12 +365,26 @@
 
         <div class="booking-info">
             💡 Click on any <strong>green slot</strong> to book it.
-            Payment will be processed automatically.
+            Payment must be confirmed within 100 seconds.
         </div>
 
     </div>
 
 </main>
+
+<div id="payOverlay" class="pay-overlay">
+  <div class="pay-box">
+    <h2 id="payTitle">Payment</h2>
+    <p>Payment done?</p>
+    <div class="pay-amount" id="payAmount"></div>
+    <div class="pay-timer">⏱ Time left: <span id="payTimer">100</span>s</div>
+    <div class="pay-actions">
+      <button class="pay-yes" id="payYes">Yes</button>
+      <button class="pay-no" id="payNo">No</button>
+    </div>
+  </div>
+</div>
+
 
 <script src="app.js"></script>
 
@@ -430,48 +458,72 @@ async function loadSlots() {
     }
 }
 
-async function bookSlot(id) {
+let payInterval = null;
 
+async function bookSlot(id) {
     setMsg(`Booking slot P${String(id).padStart(2, "0")}...`, "loading");
 
-    const bookRes =
-        await apiPost("/api/book", { slot_id: id });
+    const bookRes = await apiPost("/api/book", { slot_id: id });
 
     if (!bookRes.ok) {
-
-        setMsg(
-            bookRes.data.error || "Booking failed.",
-            "error"
-        );
-
-        return;
-    }
-
-    setMsg("Slot reserved. Processing payment...", "loading");
-
-    const payRes =
-        await apiPost("/api/payment", {
-            booking_id: bookRes.data.booking_id
-        });
-
-    if (!payRes.ok) {
-
-        setMsg(
-            payRes.data.error || "Payment failed.",
-            "error"
-        );
-
+        setMsg(bookRes.data.error || "Booking failed.", "error");
         await loadSlots();
         return;
     }
 
-    const amount =
-        Number(payRes.data.amount).toFixed(2);
+    await loadSlots();
+    setMsg("Slot reserved. Please complete the payment.", "loading");
+    showPayment(id, bookRes.data.booking_id, bookRes.data.amount,
+                bookRes.data.expires_in || 100);
+}
 
-    setMsg(
-        `✓ Slot P${String(id).padStart(2, "0")} booked and paid successfully — $${amount}`,
-        "success"
-    );
+function showPayment(slotId, bookingId, amount, seconds) {
+    const label = "P" + String(slotId).padStart(2, "0");
+    const overlay = document.getElementById("payOverlay");
+    const timerEl = document.getElementById("payTimer");
+
+    document.getElementById("payTitle").textContent = "Pay for slot " + label;
+    document.getElementById("payAmount").textContent = "$" + Number(amount).toFixed(2);
+
+    let left = seconds;
+    timerEl.textContent = left;
+    overlay.classList.add("show");
+
+    clearInterval(payInterval);
+    payInterval = setInterval(() => {
+        left--;
+        timerEl.textContent = left;
+        if (left <= 0) {
+            clearInterval(payInterval);
+            finishPayment(bookingId, "timeout", label);
+        }
+    }, 1000);
+
+    document.getElementById("payYes").onclick = () => {
+        clearInterval(payInterval);
+        finishPayment(bookingId, "yes", label);
+    };
+    document.getElementById("payNo").onclick = () => {
+        clearInterval(payInterval);
+        finishPayment(bookingId, "no", label);
+    };
+}
+
+async function finishPayment(bookingId, decision, label) {
+    document.getElementById("payOverlay").classList.remove("show");
+
+    const res = await apiPost("/api/payment",
+        { booking_id: bookingId, decision: decision });
+
+    if (decision === "timeout" || res.status === 410) {
+        setMsg(`⏱ Payment time expired. Slot ${label} was not booked.`, "error");
+    } else if (!res.ok) {
+        setMsg(res.data.error || "Payment failed.", "error");
+    } else if (decision === "yes") {
+        setMsg(`✓ Payment successful. Slot ${label} is booked.`, "success");
+    } else {
+        setMsg(`✗ Payment unsuccessful. Slot ${label} was not booked.`, "error");
+    }
 
     await loadSlots();
 }
