@@ -1,337 +1,428 @@
+
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard — ParkEasy</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — ParkEasy</title>
+  <link rel="stylesheet" href="style.css">
 
-<style>
-body {
-  background: #f5f7fb;
-}
+  <style>
+    body { background: #f5f7fb; }
 
-.admin-page {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 0 20px;
-}
+    .admin-page {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28px;
-}
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 28px;
+    }
 
-.admin-header h1 {
-  margin: 0;
-  color: #172033;
-  font-size: 30px;
-}
+    .admin-header h1 {
+      margin: 0;
+      color: #172033;
+      font-size: 30px;
+    }
 
-.admin-header p {
-  margin: 7px 0 0;
-  color: #6b7280;
-}
+    .admin-header p {
+      margin: 7px 0 0;
+      color: #6b7280;
+    }
 
-.refresh-btn {
-  border: none;
-  background: #2563eb;
-  color: white;
-  padding: 11px 18px;
-  border-radius: 9px;
-  cursor: pointer;
-  font-weight: 600;
-}
+    .refresh-btn {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 600;
+    }
 
-.refresh-btn:hover {
-  background: #1d4ed8;
-}
+    .refresh-btn:hover { background: #1d4ed8; }
 
-/* Statistics */
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 25px;
+    }
 
-.dashboard-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 25px;
-}
+    .dashboard-stat {
+      background: white;
+      border-radius: 15px;
+      padding: 22px;
+      box-shadow: 0 7px 25px rgba(0,0,0,.06);
+      border-left: 4px solid #2563eb;
+    }
 
-.dashboard-stat {
-  background: white;
-  border-radius: 15px;
-  padding: 22px;
-  box-shadow: 0 7px 25px rgba(0,0,0,0.06);
-  border-left: 4px solid #2563eb;
-}
+    .dashboard-stat.available { border-left-color: #16a34a; }
+    .dashboard-stat.booked { border-left-color: #dc2626; }
 
-.dashboard-stat.available {
-  border-left-color: #16a34a;
-}
+    .stat-icon { font-size: 25px; margin-bottom: 12px; }
+    .stat-number { font-size: 30px; font-weight: 800; color: #172033; }
+    .stat-label { color: #6b7280; margin-top: 4px; font-size: 14px; }
 
-.dashboard-stat.booked {
-  border-left-color: #dc2626;
-}
+    .dashboard-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 7px 30px rgba(0,0,0,.06);
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
 
-.stat-icon {
-  font-size: 25px;
-  margin-bottom: 12px;
-}
+    .card-heading {
+      padding: 20px 25px;
+      border-bottom: 1px solid #e5e7eb;
+    }
 
-.stat-number {
-  font-size: 30px;
-  font-weight: 800;
-  color: #172033;
-}
+    .card-heading h2 { margin: 0; color: #172033; font-size: 19px; }
+    .card-heading p { margin: 5px 0 0; color: #6b7280; font-size: 14px; }
 
-.stat-label {
-  color: #6b7280;
-  margin-top: 4px;
-  font-size: 14px;
-}
+    .filter-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
 
-/* Table */
+    .filter-controls input,
+    .filter-controls select {
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: white;
+      font-size: 14px;
+    }
 
-.dashboard-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 7px 30px rgba(0,0,0,0.06);
-  overflow: hidden;
-}
+    .filter-controls input { flex: 1; min-width: 180px; }
+    .filter-controls select { min-width: 150px; }
 
-.card-heading {
-  padding: 20px 25px;
-  border-bottom: 1px solid #e5e7eb;
-}
+    .table-wrap { overflow-x: auto; }
 
-.card-heading h2 {
-  margin: 0;
-  color: #172033;
-  font-size: 19px;
-}
+    table { width: 100%; border-collapse: collapse; }
 
-.card-heading p {
-  margin: 5px 0 0;
-  color: #6b7280;
-  font-size: 14px;
-}
+    th {
+      background: #f8fafc;
+      color: #64748b;
+      text-align: left;
+      padding: 15px 18px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      white-space: nowrap;
+    }
 
-.table-wrap {
-  overflow-x: auto;
-}
+    td {
+      padding: 15px 18px;
+      border-top: 1px solid #eef0f4;
+      color: #334155;
+      font-size: 14px;
+    }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    .slot-id { font-weight: 700; color: #2563eb; }
 
-th {
-  background: #f8fafc;
-  color: #64748b;
-  text-align: left;
-  padding: 15px 22px;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: .4px;
-}
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
 
-td {
-  padding: 16px 22px;
-  border-top: 1px solid #eef0f4;
-  color: #334155;
-}
+    .badge.AVAILABLE, .badge.PAID, .badge.SUCCESS {
+      background: #dcfce7;
+      color: #15803d;
+    }
 
-.slot-id {
-  font-weight: 700;
-  color: #2563eb;
-}
+    .badge.BOOKED, .badge.PENDING {
+      background: #fef3c7;
+      color: #92400e;
+    }
 
-.badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
-}
+    .badge.CANCELLED, .badge.FAILED {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
 
-.badge.AVAILABLE {
-  background: #dcfce7;
-  color: #15803d;
-}
+    .error { color: #dc2626; }
+    .error, .empty-message { text-align: center; padding: 25px; }
+    .empty-message { color: #64748b; }
 
-.badge.BOOKED {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.error {
-  text-align: center;
-  padding: 25px;
-  color: #dc2626;
-}
-
-@media (max-width: 700px) {
-  .admin-page {
-    margin: 25px auto;
-  }
-
-  .admin-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .admin-header h1 {
-    font-size: 25px;
-  }
-
-  .dashboard-stats {
-    grid-template-columns: 1fr;
-  }
-
-  th,
-  td {
-    padding: 13px 15px;
-    white-space: nowrap;
-  }
-}
-</style>
+    @media (max-width: 700px) {
+      .admin-page { margin: 25px auto; }
+      .admin-header { align-items: flex-start; flex-direction: column; }
+      .admin-header h1 { font-size: 25px; }
+      .dashboard-stats { grid-template-columns: 1fr; }
+      th, td { padding: 13px 15px; white-space: nowrap; }
+      .card-heading { padding: 18px; }
+    }
+  </style>
 </head>
 
 <body>
+  <header class="nav">
+    <a class="brand" href="index.html">🅿️ ParkEasy</a>
+    <nav>
+      <a href="index.html" data-page="home">Home</a>
+      <a href="booking.html" data-page="booking">Book a Slot</a>
+      <a href="mybookings.html" data-page="mybookings">My Bookings</a>
+      <a href="admin.html" data-page="admin">Admin</a>
+      <a href="er-diagram.html">ER Diagram</a>
+      <span id="authArea"></span>
+    </nav>
+  </header>
 
-<header class="nav">
-  <a class="brand" href="index.html">🅿️ ParkEasy</a>
-
-  <nav>
-    <a href="index.html" data-page="home">Home</a>
-    <a href="booking.html" data-page="booking">Book a Slot</a>
-    <a href="mybookings.html" data-page="mybookings">My Bookings</a>
-    <a href="admin.html" data-page="admin">Admin</a>
-    <span id="authArea"></span>
-  </nav>
-</header>
-
-<div class="admin-page">
-
-  <div class="admin-header">
-    <div>
-      <h1>Admin Dashboard</h1>
-      <p>Monitor the current parking lot status.</p>
+  <main class="admin-page">
+    <div class="admin-header">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p>Monitor parking availability and booking records.</p>
+      </div>
+      <button class="refresh-btn" id="refreshBtn" type="button">↻ Refresh</button>
     </div>
 
-    <button class="refresh-btn" id="refreshBtn">
-      ↻ Refresh
-    </button>
-  </div>
+    <div id="stats" class="dashboard-stats"></div>
 
-  <div id="stats" class="dashboard-stats"></div>
+    <section class="dashboard-card">
+      <div class="card-heading">
+        <h2>Parking Slots</h2>
+        <p>Live status of every parking slot</p>
+        <div class="filter-controls">
+          <input type="search" id="slotSearch"
+                 placeholder="Search slot (e.g. P01 or 1)"
+                 aria-label="Search parking slots">
+          <select id="statusFilter" aria-label="Filter by slot status">
+            <option value="ALL">All statuses</option>
+            <option value="AVAILABLE">Available</option>
+            <option value="BOOKED">Booked</option>
+          </select>
+        </div>
+      </div>
 
-  <div class="dashboard-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Slot</th><th>Status</th></tr>
+          </thead>
+          <tbody id="rows">
+            <tr><td colspan="2">Loading parking slots...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-    <div class="card-heading">
-      <h2>Parking Slots</h2>
-      <p>Live status of every parking slot</p>
-    </div>
+    <section class="dashboard-card">
+      <div class="card-heading">
+        <h2>Booking Records</h2>
+        <p>Bookings retrieved from the database</p>
+        <div class="filter-controls">
+          <input type="search" id="bookingSearch"
+                 placeholder="Search booking ID, username or slot"
+                 aria-label="Search booking records">
+          <select id="bookingStatusFilter" aria-label="Filter bookings by status">
+            <option value="ALL">All booking statuses</option>
+            <option value="PENDING">Pending</option>
+            <option value="PAID">Paid</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
+        <p id="bookingMessage" role="status" style="margin-top:12px"></p>
+      </div>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Username</th>
+              <th>Slot</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Booking Date</th>
+            </tr>
+          </thead>
+          <tbody id="bookingRows">
+            <tr><td colspan="6">Loading booking records...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    renderNav("admin");
+
+    let allSlots = [];
+    let allBookings = [];
+
+    function renderSlots() {
+      const term = document.getElementById("slotSearch").value.trim().toLowerCase();
+      const status = document.getElementById("statusFilter").value;
+
+      const filtered = allSlots.filter(slot => {
+        const label = "p" + String(slot.id).padStart(2, "0");
+        const matchesSearch = label.includes(term) || String(slot.id).includes(term);
+        const matchesStatus = status === "ALL" || slot.status === status;
+        return matchesSearch && matchesStatus;
+      });
+
+      const rows = document.getElementById("rows");
+
+      if (!filtered.length) {
+        rows.innerHTML = '<tr><td colspan="2" class="empty-message">No matching parking slots.</td></tr>';
+        return;
+      }
+
+      rows.innerHTML = filtered.map(slot => `
+        <tr>
+          <td><span class="slot-id">P${String(slot.id).padStart(2, "0")}</span></td>
+          <td><span class="badge ${escapeHtml(slot.status)}">${escapeHtml(slot.status)}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderBookings() {
+      const term = document.getElementById("bookingSearch").value.trim().toLowerCase();
+      const status = document.getElementById("bookingStatusFilter").value;
+
+      const filtered = allBookings.filter(booking => {
+        const matchesSearch =
+          String(booking.id).includes(term) ||
+          String(booking.username ?? "").toLowerCase().includes(term) ||
+          ("p" + String(booking.slot_id).padStart(2, "0")).includes(term) ||
+          String(booking.slot_id).includes(term);
+
+        const matchesStatus = status === "ALL" || booking.status === status;
+        return matchesSearch && matchesStatus;
+      });
+
+      const rows = document.getElementById("bookingRows");
+
+      if (!filtered.length) {
+        rows.innerHTML = '<tr><td colspan="6" class="empty-message">No matching booking records.</td></tr>';
+        return;
+      }
+
+      rows.innerHTML = filtered.map(booking => {
+        const date = booking.created_at
+          ? new Date(booking.created_at.replace(" ", "T")).toLocaleString()
+          : "—";
+
+        return `
           <tr>
-            <th>Slot</th>
-            <th>Status</th>
+            <td>#${Number(booking.id)}</td>
+            <td>${escapeHtml(booking.username)}</td>
+            <td><span class="slot-id">P${String(booking.slot_id).padStart(2, "0")}</span></td>
+            <td>₹${Number(booking.amount).toFixed(2)}</td>
+            <td><span class="badge ${escapeHtml(booking.status)}">${escapeHtml(booking.status)}</span></td>
+            <td>${escapeHtml(date)}</td>
           </tr>
-        </thead>
+        `;
+      }).join("");
+    }
 
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
+    async function loadSlots() {
+      const rows = document.getElementById("rows");
+      rows.innerHTML = '<tr><td colspan="2">Loading parking slots...</td></tr>';
 
-  </div>
+      try {
+        const result = await apiGet("/api/slots");
 
-</div>
+        if (!result.ok || !Array.isArray(result.data)) {
+          rows.innerHTML = '<tr><td colspan="2" class="error">Could not load parking slots.</td></tr>';
+          return;
+        }
 
-<script src="app.js"></script>
+        allSlots = result.data;
 
-<script>
-renderNav("admin");
+        const total = allSlots.length;
+        const available = allSlots.filter(s => s.status === "AVAILABLE").length;
+        const booked = allSlots.filter(s => s.status === "BOOKED").length;
 
-async function load() {
+        document.getElementById("stats").innerHTML = `
+          <div class="dashboard-stat">
+            <div class="stat-icon">🅿️</div>
+            <div class="stat-number">${total}</div>
+            <div class="stat-label">Total Slots</div>
+          </div>
+          <div class="dashboard-stat available">
+            <div class="stat-icon">✅</div>
+            <div class="stat-number">${available}</div>
+            <div class="stat-label">Available Slots</div>
+          </div>
+          <div class="dashboard-stat booked">
+            <div class="stat-icon">🚗</div>
+            <div class="stat-number">${booked}</div>
+            <div class="stat-label">Occupied Slots</div>
+          </div>
+        `;
 
-  document.getElementById("rows").innerHTML = `
-    <tr>
-      <td colspan="2">Loading parking slots...</td>
-    </tr>
-  `;
+        renderSlots();
+      } catch (error) {
+        rows.innerHTML = '<tr><td colspan="2" class="error">Could not connect to the server.</td></tr>';
+      }
+    }
 
-  const { ok, data } = await apiGet("/api/slots");
+    async function loadBookings() {
+      const rows = document.getElementById("bookingRows");
+      const message = document.getElementById("bookingMessage");
 
-  if (!ok) {
-    document.getElementById("rows").innerHTML = `
-      <tr>
-        <td colspan="2" class="error">
-          Could not load parking slots.
-        </td>
-      </tr>
-    `;
-    return;
-  }
+      rows.innerHTML = '<tr><td colspan="6">Loading booking records...</td></tr>';
+      message.textContent = "";
 
-  const total = data.length;
-  const available = data.filter(
-    s => s.status === "AVAILABLE"
-  ).length;
+      try {
+        const result = await apiGet("/api/admin/bookings");
 
-  const booked = total - available;
+        if (!result.ok) {
+          allBookings = [];
 
-  document.getElementById("stats").innerHTML = `
+          if (result.status === 401) {
+            message.textContent = "Please log in to access booking records.";
+          } else if (result.status === 403) {
+            message.textContent = "Admin access required. Log in with the account marked as admin.";
+          } else {
+            message.textContent = result.data?.error || "Could not load booking records.";
+          }
 
-    <div class="dashboard-stat">
-      <div class="stat-icon">🅿️</div>
-      <div class="stat-number">${total}</div>
-      <div class="stat-label">Total Slots</div>
-    </div>
+          rows.innerHTML = `<tr><td colspan="6" class="error">${escapeHtml(message.textContent)}</td></tr>`;
+          return;
+        }
 
-    <div class="dashboard-stat available">
-      <div class="stat-icon">✅</div>
-      <div class="stat-number">${available}</div>
-      <div class="stat-label">Available Slots</div>
-    </div>
+        if (!Array.isArray(result.data)) {
+          message.textContent = "Unexpected response from the booking API.";
+          rows.innerHTML = `<tr><td colspan="6" class="error">${escapeHtml(message.textContent)}</td></tr>`;
+          return;
+        }
 
-    <div class="dashboard-stat booked">
-      <div class="stat-icon">🚗</div>
-      <div class="stat-number">${booked}</div>
-      <div class="stat-label">Occupied Slots</div>
-    </div>
+        allBookings = result.data;
+        message.textContent = `${allBookings.length} booking record(s)`;
+        renderBookings();
+      } catch (error) {
+        allBookings = [];
+        message.textContent = "Could not connect to the server.";
+        rows.innerHTML = `<tr><td colspan="6" class="error">${escapeHtml(message.textContent)}</td></tr>`;
+      }
+    }
 
-  `;
+    async function loadDashboard() {
+      await Promise.all([loadSlots(), loadBookings()]);
+    }
 
-  document.getElementById("rows").innerHTML = data.map(s => `
+    document.getElementById("slotSearch").addEventListener("input", renderSlots);
+    document.getElementById("statusFilter").addEventListener("change", renderSlots);
+    document.getElementById("bookingSearch").addEventListener("input", renderBookings);
+    document.getElementById("bookingStatusFilter").addEventListener("change", renderBookings);
+    document.getElementById("refreshBtn").addEventListener("click", loadDashboard);
 
-    <tr>
-      <td>
-        <span class="slot-id">
-          P${String(s.id).padStart(2, "0")}
-        </span>
-      </td>
-
-      <td>
-        <span class="badge ${s.status}">
-          ${s.status}
-        </span>
-      </td>
-    </tr>
-
-  `).join("");
-}
-
-document
-  .getElementById("refreshBtn")
-  .addEventListener("click", load);
-
-load();
-</script>
-
+    loadDashboard();
+  </script>
 </body>
 </html>

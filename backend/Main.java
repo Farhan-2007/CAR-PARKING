@@ -1,3 +1,4 @@
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -14,7 +15,7 @@ public class Main {
 
     static final String DB_URL = System.getenv().getOrDefault(
             "DB_URL",
-            "jdbc:postgresql://localhost:5432/carparking"
+            "jdbc:postgresql://localhost:5432/carparkings"
     );
 
     static final String DB_USER = System.getenv().getOrDefault(
@@ -24,7 +25,7 @@ public class Main {
 
     static final String DB_PASSWORD = System.getenv().getOrDefault(
             "DB_PASSWORD",
-            "Sumit@07"
+            "farhan"
     );
 
     static final int PORT = Integer.parseInt(
@@ -95,7 +96,7 @@ public class Main {
 
         e.getResponseHeaders().set(
                 "Content-Type",
-                "application/json"
+                "application/json; charset=UTF-8"
         );
 
         e.sendResponseHeaders(code, b.length);
@@ -120,9 +121,9 @@ public class Main {
             );
 
             s.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS slots(" +
-                    "id SERIAL PRIMARY KEY," +
-                    "status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE')"
+                "CREATE TABLE IF NOT EXISTS slots(" +
+                "id SERIAL PRIMARY KEY," +
+                "status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE')"
             );
 
             s.executeUpdate(
@@ -133,7 +134,7 @@ public class Main {
                 "amount DECIMAL(10,2) NOT NULL," +
                 "status VARCHAR(20) NOT NULL," +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
-             );
+            );
 
             s.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS payments(" +
@@ -174,14 +175,20 @@ public class Main {
     }
 
     static String jsonEscape(String s) {
+        if (s == null) {
+            return "";
+        }
+
         return s
                 .replace("\\", "\\\\")
-                .replace("\"", "\\\"");
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 
     /*
      * Serves the frontend.
-     *
      * http://localhost:8080/
      *        ↓
      * frontend/index.html
@@ -207,73 +214,43 @@ public class Main {
                 Files.isDirectory(file)
         ) {
 
-            String response =
-                    "404 - Page Not Found";
+            String response = "404 - Page Not Found";
 
             byte[] data =
                     response.getBytes(StandardCharsets.UTF_8);
 
-            e.sendResponseHeaders(
-                    404,
-                    data.length
-            );
+            e.sendResponseHeaders(404, data.length);
 
-            try (
-                    OutputStream out =
-                            e.getResponseBody()
-            ) {
+            try (OutputStream out = e.getResponseBody()) {
                 out.write(data);
             }
 
             return;
         }
 
-        String contentType =
-                "text/html; charset=UTF-8";
+        String contentType = "text/html; charset=UTF-8";
 
         if (requestPath.endsWith(".css")) {
-
-            contentType =
-                    "text/css; charset=UTF-8";
-
+            contentType = "text/css; charset=UTF-8";
         } else if (requestPath.endsWith(".js")) {
-
-            contentType =
-                    "application/javascript; charset=UTF-8";
-
+            contentType = "application/javascript; charset=UTF-8";
         } else if (requestPath.endsWith(".png")) {
-
             contentType = "image/png";
-
         } else if (
                 requestPath.endsWith(".jpg") ||
                 requestPath.endsWith(".jpeg")
         ) {
-
             contentType = "image/jpeg";
-
         } else if (requestPath.endsWith(".svg")) {
-
             contentType = "image/svg+xml";
         }
 
-        byte[] data =
-                Files.readAllBytes(file);
+        byte[] data = Files.readAllBytes(file);
 
-        e.getResponseHeaders().set(
-                "Content-Type",
-                contentType
-        );
+        e.getResponseHeaders().set("Content-Type", contentType);
+        e.sendResponseHeaders(200, data.length);
 
-        e.sendResponseHeaders(
-                200,
-                data.length
-        );
-
-        try (
-                OutputStream out =
-                        e.getResponseBody()
-        ) {
+        try (OutputStream out = e.getResponseBody()) {
             out.write(data);
         }
     }
@@ -283,11 +260,10 @@ public class Main {
 
         setup();
 
-        HttpServer server =
-                HttpServer.create(
-                        new InetSocketAddress(PORT),
-                        0
-                );
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(PORT),
+                0
+        );
 
         // Frontend
         server.createContext(
@@ -295,7 +271,7 @@ public class Main {
                 Main::serveFrontend
         );
 
-        // API endpoints
+        // Existing API endpoints
         server.createContext(
                 "/api/register",
                 UserReg::handle
@@ -324,6 +300,12 @@ public class Main {
         server.createContext(
                 "/api/mybookings",
                 SlotBooking::handle
+        );
+
+        // New admin booking records endpoint
+        server.createContext(
+                "/api/admin/bookings",
+                AdminBookings::handle
         );
 
         server.createContext(

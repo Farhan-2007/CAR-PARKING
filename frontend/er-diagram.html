@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParkEasy | ER Diagram & Relational Schema</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+      body {
+        background: #f5f7fa;
+        color: #263238;
+      }
+
+      main {
+        max-width: 1250px;
+        margin: 30px auto;
+        padding: 0 18px 45px;
+      }
+
+      h1 {
+        margin-bottom: 8px;
+      }
+      h2 {
+        margin-top: 0;
+        color: #243b53;
+      }
+      h3 {
+        margin-top: 28px;
+        color: #334e68;
+      }
+
+      .subtitle {
+        color: #627d98;
+        line-height: 1.6;
+        margin-bottom: 22px;
+      }
+
+      .section {
+        background: white;
+        padding: 22px;
+        border: 1px solid #d9e2ec;
+        border-radius: 14px;
+        margin-bottom: 25px;
+        overflow-x: auto;
+        box-shadow: 0 4px 14px rgba(36, 59, 83, 0.05);
+      }
+
+      .diagram {
+        min-width: 900px;
+      }
+
+      .diagram svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .entity {
+        fill: #dbeafe;
+        stroke: #1d4ed8;
+        stroke-width: 2.2;
+      }
+
+      .entity-text {
+        fill: #1e3a8a;
+        font-size: 17px;
+        font-weight: bold;
+      }
+
+      .attribute {
+        fill: #fef3c7;
+        stroke: #b45309;
+        stroke-width: 1.7;
+      }
+
+      .attribute-text {
+        fill: #78350f;
+        font-size: 12px;
+      }
+
+      .pk {
+        text-decoration: underline;
+        font-weight: bold;
+      }
+
+      .relationship {
+        fill: #d1fae5;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+
+      .relationship-text {
+        fill: #065f46;
+        font-size: 13px;
+        font-weight: bold;
+      }
+
+      .connector {
+        fill: none;
+        stroke: #526579;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cardinality {
+        fill: #be123c;
+        font-size: 15px;
+        font-weight: bold;
+      }
+
+      .diagram-note {
+        color: #627d98;
+        font-size: 13px;
+        margin-top: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+        margin-bottom: 15px;
+      }
+
+      th,
+      td {
+        padding: 11px 12px;
+        text-align: left;
+        border-bottom: 1px solid #e5eaf0;
+      }
+
+      th {
+        background: #e8eef5;
+        color: #243b53;
+      }
+
+      td {
+        font-size: 14px;
+      }
+
+      .key {
+        font-weight: bold;
+        color: #1d4ed8;
+      }
+
+      .note {
+        background: #ecfdf5;
+        border-left: 4px solid #059669;
+        padding: 16px;
+        border-radius: 8px;
+        line-height: 1.9;
+        margin-top: 25px;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin: 12px 0 18px;
+        color: #526579;
+        font-size: 13px;
+      }
+
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .legend-box {
+        width: 17px;
+        height: 13px;
+        border: 2px solid #1d4ed8;
+        background: #dbeafe;
+      }
+
+      .legend-oval {
+        width: 22px;
+        height: 13px;
+        border: 1.5px solid #b45309;
+        background: #fef3c7;
+        border-radius: 50%;
+      }
+
+      .legend-diamond {
+        width: 13px;
+        height: 13px;
+        border: 1.5px solid #047857;
+        background: #d1fae5;
+        transform: rotate(45deg);
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="nav">
+      <a class="brand" href="index.html">🅿️ ParkEasy</a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="booking.html">Book a Slot</a>
+        <a href="mybookings.html">My Bookings</a>
+        <a href="admin.html">Admin</a>
+        <a href="er-diagram.html">ER Diagram & Schema</a>
+        <span id="authArea"></span>
+      </nav>
+    </header>
+
+    <main>
+      <h1>ER Diagram & Relational Schema</h1>
+      <p class="subtitle">
+        Database design for the ParkEasy Car Parking Management System.
+      </p>
+
+      <section class="section">
+        <h2>1. Entity-Relationship Diagram</h2>
+        <p class="subtitle">
+          Entities are rectangles, attributes are ovals, relationships are
+          diamonds, and 1:N labels indicate cardinality.
+        </p>
+
+        <div class="legend">
+          <span><i class="legend-box"></i> Entity</span>
+          <span><i class="legend-oval"></i> Attribute</span>
+          <span><i class="legend-diamond"></i> Relationship</span>
+          <span><strong style="color: #be123c">1 / N</strong> Cardinality</span>
+        </div>
+
+        <!-- Replace the whole <div class="diagram"> ... </div> block in er-diagram.html with this -->
+        <div class="diagram">
+          <svg
+            viewBox="0 0 1100 900"
+            role="img"
+            aria-label="Car parking management ER diagram"
+          >
+            <!-- ========== LINES (drawn first; shapes on top hide the overlap) ========== -->
+            <g class="connector">
+              <!-- USERS attributes (lines go to the entity centre) -->
+              <line x1="240" y1="272" x2="150" y2="150" />
+              <line x1="240" y1="272" x2="320" y2="150" />
+              <line x1="240" y1="272" x2="80" y2="272" />
+              <line x1="240" y1="272" x2="400" y2="272" />
+
+              <!-- SLOTS attributes -->
+              <line x1="860" y1="272" x2="860" y2="150" />
+              <line x1="860" y1="272" x2="1010" y2="272" />
+
+              <!-- BOOKINGS attributes -->
+              <line x1="550" y1="500" x2="340" y2="470" />
+              <line x1="550" y1="500" x2="320" y2="550" />
+              <line x1="550" y1="500" x2="400" y2="625" />
+              <line x1="550" y1="500" x2="760" y2="470" />
+              <line x1="550" y1="500" x2="780" y2="550" />
+              <line x1="550" y1="500" x2="700" y2="625" />
+
+              <!-- PAYMENTS attributes -->
+              <line x1="550" y1="760" x2="320" y2="760" />
+              <line x1="550" y1="760" x2="780" y2="760" />
+              <line x1="550" y1="760" x2="400" y2="845" />
+              <line x1="550" y1="760" x2="550" y2="860" />
+              <line x1="550" y1="760" x2="700" y2="845" />
+
+              <!-- USERS (1) -- makes -- (N) BOOKINGS -->
+              <path d="M240 294 V370" />
+              <path d="M300 400 H500 V470" />
+
+              <!-- SLOTS (1) -- reserves -- (N) BOOKINGS -->
+              <path d="M860 294 V370" />
+              <path d="M800 400 H600 V470" />
+
+              <!-- BOOKINGS (1) -- has -- (N) PAYMENTS -->
+              <path d="M550 530 V610" />
+              <path d="M550 670 V730" />
+            </g>
+
+            <!-- ========== USERS ========== -->
+            <ellipse class="attribute" cx="150" cy="150" rx="48" ry="23" />
+            <text
+              class="attribute-text pk"
+              x="150"
+              y="154"
+              text-anchor="middle"
+            >
+              id (PK)
+            </text>
+
+            <ellipse class="attribute" cx="320" cy="150" rx="82" ry="23" />
+            <text class="attribute-text" x="320" y="154" text-anchor="middle">
+              username (UNIQUE)
+            </text>
+
+            <ellipse class="attribute" cx="80" cy="272" rx="64" ry="23" />
+            <text class="attribute-text" x="80" y="276" text-anchor="middle">
+              password_hash
+            </text>
+
+            <ellipse class="attribute" cx="400" cy="272" rx="48" ry="23" />
+            <text class="attribute-text" x="400" y="276" text-anchor="middle">
+              is_admin
+            </text>
+
+            <rect class="entity" x="170" y="250" width="140" height="44" />
+            <text class="entity-text" x="240" y="278" text-anchor="middle">
+              USERS
+            </text>
+
+            <!-- ========== SLOTS ========== -->
+            <ellipse class="attribute" cx="860" cy="150" rx="48" ry="23" />
+            <text
+              class="attribute-text pk"
+              x="860"
+              y="154"
+              text-anchor="middle"
+            >
+              id (PK)
+            </text>
+
+            <ellipse class="attribute" cx="1010" cy="272" rx="48" ry="23" />
+            <text class="attribute-text" x="1010" y="276" text-anchor="middle">
+              status
+            </text>
+
+            <rect class="entity" x="790" y="250" width="140" height="44" />
+            <text class="entity-text" x="860" y="278" text-anchor="middle">
+              SLOTS
+            </text>
+
+            <!-- ========== RELATIONSHIPS ========== -->
+            <!-- makes -->
+            <polygon
+              class="relationship"
+              points="180,400 240,370 300,400 240,430"
+            />
+            <text
+              class="relationship-text"
+              x="240"
+              y="404"
+              text-anchor="middle"
+            >
+              makes
+            </text>
+
+            <!-- reserves -->
+            <polygon
+              class="relationship"
+              points="800,400 860,370 920,400 860,430"
+            />
+            <text
+              class="relationship-text"
+              x="860"
+              y="404"
+              text-anchor="middle"
+            >
+              reserves
+            </text>
+
+            <!-- has -->
+            <polygon
+              class="relationship"
+              points="500,640 550,610 600,640 550,670"
+            />
+            <text
+              class="relationship-text"
+              x="550"
+              y="644"
+              text-anchor="middle"
+            >
+              has
+            </text>
+
+            <!-- Cardinality labels -->
+            <text class="cardinality" x="252" y="330">1</text>
+            <text class="cardinality" x="508" y="440">N</text>
+            <text class="cardinality" x="872" y="330">1</text>
+            <text class="cardinality" x="590" y="440" text-anchor="end">N</text>
+            <text class="cardinality" x="562" y="575">1</text>
+            <text class="cardinality" x="562" y="708">N</text>
+
+            <!-- ========== BOOKINGS ========== -->
+            <ellipse class="attribute" cx="340" cy="470" rx="48" ry="23" />
+            <text
+              class="attribute-text pk"
+              x="340"
+              y="474"
+              text-anchor="middle"
+            >
+              id (PK)
+            </text>
+
+            <ellipse class="attribute" cx="320" cy="550" rx="72" ry="23" />
+            <text class="attribute-text" x="320" y="554" text-anchor="middle">
+              username (FK)
+            </text>
+
+            <ellipse class="attribute" cx="400" cy="625" rx="48" ry="23" />
+            <text class="attribute-text" x="400" y="629" text-anchor="middle">
+              status
+            </text>
+
+            <ellipse class="attribute" cx="760" cy="470" rx="62" ry="23" />
+            <text class="attribute-text" x="760" y="474" text-anchor="middle">
+              slot_id (FK)
+            </text>
+
+            <ellipse class="attribute" cx="780" cy="550" rx="48" ry="23" />
+            <text class="attribute-text" x="780" y="554" text-anchor="middle">
+              amount
+            </text>
+
+            <ellipse class="attribute" cx="700" cy="625" rx="58" ry="23" />
+            <text class="attribute-text" x="700" y="629" text-anchor="middle">
+              created_at
+            </text>
+
+            <rect class="entity" x="470" y="470" width="160" height="60" />
+            <text class="entity-text" x="550" y="506" text-anchor="middle">
+              BOOKINGS
+            </text>
+
+            <!-- ========== PAYMENTS ========== -->
+            <ellipse class="attribute" cx="320" cy="760" rx="70" ry="23" />
+            <text class="attribute-text" x="320" y="764" text-anchor="middle">
+              booking_id (FK)
+            </text>
+
+            <ellipse class="attribute" cx="780" cy="760" rx="48" ry="23" />
+            <text class="attribute-text" x="780" y="764" text-anchor="middle">
+              paid_at
+            </text>
+
+            <ellipse class="attribute" cx="400" cy="845" rx="48" ry="23" />
+            <text
+              class="attribute-text pk"
+              x="400"
+              y="849"
+              text-anchor="middle"
+            >
+              id (PK)
+            </text>
+
+            <ellipse class="attribute" cx="550" cy="860" rx="48" ry="23" />
+            <text class="attribute-text" x="550" y="864" text-anchor="middle">
+              amount
+            </text>
+
+            <ellipse class="attribute" cx="700" cy="845" rx="48" ry="23" />
+            <text class="attribute-text" x="700" y="849" text-anchor="middle">
+              status
+            </text>
+
+            <rect class="entity" x="470" y="730" width="160" height="60" />
+            <text class="entity-text" x="550" y="766" text-anchor="middle">
+              PAYMENTS
+            </text>
+          </svg>
+        </div>
+
+        <p class="diagram-note">
+          PK = Primary Key; FK = Foreign Key. The diagram represents the USERS,
+          SLOTS, BOOKINGS and PAYMENTS tables in the project database.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>2. Relational Schema</h2>
+        <p class="subtitle">
+          PK = Primary Key · FK = Foreign Key · UNIQUE = Candidate/alternate key
+          constraint.
+        </p>
+
+        <h3>USERS</h3>
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Data Type</th>
+            <th>Key</th>
+            <th>Constraint</th>
+          </tr>
+          <tr>
+            <td>id</td>
+            <td>SERIAL</td>
+            <td class="key">PK</td>
+            <td>Auto-generated</td>
+          </tr>
+          <tr>
+            <td>username</td>
+            <td>VARCHAR(50)</td>
+            <td class="key">UNIQUE</td>
+            <td>NOT NULL</td>
+          </tr>
+          <tr>
+            <td>password_hash</td>
+            <td>VARCHAR(64)</td>
+            <td>—</td>
+            <td>NOT NULL</td>
+          </tr>
+          <tr>
+            <td>is_admin</td>
+            <td>BOOLEAN</td>
+            <td>—</td>
+            <td>NOT NULL, DEFAULT FALSE</td>
+          </tr>
+        </table>
+
+        <h3>SLOTS</h3>
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Data Type</th>
+            <th>Key</th>
+            <th>Constraint</th>
+          </tr>
+          <tr>
+            <td>id</td>
+            <td>SERIAL</td>
+            <td class="key">PK</td>
+            <td>Auto-generated</td>
+          </tr>
+          <tr>
+            <td>status</td>
+            <td>VARCHAR(20)</td>
+            <td>—</td>
+            <td>NOT NULL, DEFAULT 'AVAILABLE'; AVAILABLE or BOOKED</td>
+          </tr>
+        </table>
+
+        <h3>BOOKINGS</h3>
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Data Type</th>
+            <th>Key</th>
+            <th>Constraint</th>
+          </tr>
+          <tr>
+            <td>id</td>
+            <td>SERIAL</td>
+            <td class="key">PK</td>
+            <td>Auto-generated</td>
+          </tr>
+          <tr>
+            <td>username</td>
+            <td>VARCHAR(50)</td>
+            <td class="key">FK</td>
+            <td>References USERS(username), NOT NULL</td>
+          </tr>
+          <tr>
+            <td>slot_id</td>
+            <td>INT</td>
+            <td class="key">FK</td>
+            <td>References SLOTS(id), NOT NULL</td>
+          </tr>
+          <tr>
+            <td>amount</td>
+            <td>DECIMAL(10,2)</td>
+            <td>—</td>
+            <td>NOT NULL, non-negative</td>
+          </tr>
+          <tr>
+            <td>status</td>
+            <td>VARCHAR(20)</td>
+            <td>—</td>
+            <td>NOT NULL</td>
+          </tr>
+          <tr>
+            <td>created_at</td>
+            <td>TIMESTAMP</td>
+            <td>—</td>
+            <td>DEFAULT CURRENT_TIMESTAMP</td>
+          </tr>
+        </table>
+
+        <h3>PAYMENTS</h3>
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Data Type</th>
+            <th>Key</th>
+            <th>Constraint</th>
+          </tr>
+          <tr>
+            <td>id</td>
+            <td>SERIAL</td>
+            <td class="key">PK</td>
+            <td>Auto-generated</td>
+          </tr>
+          <tr>
+            <td>booking_id</td>
+            <td>INT</td>
+            <td class="key">FK</td>
+            <td>References BOOKINGS(id), NOT NULL</td>
+          </tr>
+          <tr>
+            <td>amount</td>
+            <td>DECIMAL(10,2)</td>
+            <td>—</td>
+            <td>NOT NULL, non-negative</td>
+          </tr>
+          <tr>
+            <td>status</td>
+            <td>VARCHAR(20)</td>
+            <td>—</td>
+            <td>NOT NULL</td>
+          </tr>
+          <tr>
+            <td>paid_at</td>
+            <td>TIMESTAMP</td>
+            <td>—</td>
+            <td>Payment timestamp</td>
+          </tr>
+        </table>
+
+        <div class="note">
+          <strong>Relationships and cardinality</strong><br />
+          USERS (1) — (N) BOOKINGS: one user can make multiple bookings.<br />
+          SLOTS (1) — (N) BOOKINGS: a slot can appear in multiple bookings over
+          time.<br />
+          BOOKINGS (1) — (N) PAYMENTS: a booking can have multiple payment
+          records.<br />
+          Foreign keys maintain referential integrity between the tables.
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+      renderNav("");
+    </script>
+  </body>
+</html>
